@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class RestartController : MonoBehaviour
 {
-    [SerializeField] private ButtonsController _buttonsController;
+    [SerializeField] private RestartButtonController _restartButtonController;
 
     [SerializeField] private GameOverMenuController _gameOverMenuController;
 
@@ -16,23 +16,20 @@ public class RestartController : MonoBehaviour
     {
         _gameStateController = _projectStarter.GetGameController();
 
-        _buttonsController.ButtonClicked += RestarTheGame;
-    }
-
-    private void RestarTheGame(string nameButton)
-    {
-        if (nameButton == "ButtonRestart")
-        {
-            _gameOverMenuController.DisableGameOverMenu(false);
-
-            _startMenuDisabler.DisableStartMenu(true);
-
-            _gameStateController.GameState = GameStates.ChoiceOfNumberOfPlayers;
-        }
+        _restartButtonController.Clicked += RestartTheGame;
     }
 
     private void OnDestroy()
     {
-        _buttonsController.ButtonClicked -= RestarTheGame;
+        _restartButtonController.Clicked -= RestartTheGame;
+    }
+
+    private void RestartTheGame()
+    {
+        _gameOverMenuController.DisableGameOverMenu(false);
+
+        _startMenuDisabler.DisableStartMenu(true);
+
+        _gameStateController.GameState = GameState.ChoiceOfNumberOfPlayers;
     }
 }

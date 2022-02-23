@@ -4,20 +4,31 @@ public class GameStateController
 {
     public event Action GameStateChanged;
 
-    private GameStates _gameStates = GameStates.ChoiceOfNumberOfPlayers;
+    private GameState _gameStates = GameState.ChoiceOfNumberOfPlayers;
 
-    public GameStates StagePrevious { get; private set; }
+    public GameState PreviousStage { get; private set; }
 
-    public GameStates GameState
+    public GameState GameState
     {
         get => _gameStates;
         set
         {
-            StagePrevious = _gameStates;
+            PreviousStage = _gameStates;
 
             _gameStates = value;
 
             GameStateChanged?.Invoke();
         }
+    }
+
+    public bool IsAllowedToMove()
+    {
+        if (GameState == GameState.Game || GameState == GameState.Start ||
+            GameState == GameState.BallOutOfGame)
+        {
+            return true;
+        }
+
+        return false;
     }
 }

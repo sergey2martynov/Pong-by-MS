@@ -19,42 +19,41 @@ public class BallController : MonoBehaviour
     private float _startTime;
 
     private const float StationaryBallTime = 2f;
-    
+
     private Vector2 _fixedVelocity;
 
     private void Start()
     {
         _gameStateController = _projectStarter.GetGameController();
 
-        _gameStateController.GameStateChanged += MarkTheTime;
+        _gameStateController.GameStateChanged += OnGameStateChanged;
+    }
 
-        _gameStateController.GameStateChanged += RreturnTheBallToTheCenter;
-
-        _gameStateController.GameStateChanged += FixPositionAndSpeed;
-
-        _gameStateController.GameStateChanged += StartMovingAgain;
+    private void OnDestroy()
+    {
+        _gameStateController.GameStateChanged -= OnGameStateChanged;
     }
 
     private void FixedUpdate()
     {
-        if (_gameStateController.GameState == GameStates.Pause)
+        if (_gameStateController.GameState == GameState.Pause)
         {
-            if (_gameStateController.StagePrevious == GameStates.Start)
+            if (_gameStateController.PreviousStage == GameState.Start)
             {
                 _startTime += Time.deltaTime;
             }
 
-            if (_gameStateController.StagePrevious == GameStates.BallOutOfGame)
+            if (_gameStateController.PreviousStage == GameState.BallOutOfGame)
             {
                 _balReturnTime += Time.deltaTime;
             }
         }
         else
         {
-            if (_gameStateController.GameState == GameStates.Start && (Time.time - _startTime >= StationaryBallTime))
+            if (_gameStateController.GameState == GameState.Start && (Time.time - _startTime >= StationaryBallTime))
             {
                 PushTheBall();
-                _gameStateController.GameState = GameStates.Game;
+                _gameStateController.GameState = GameState.Game;
             }
 
             if (transform.position.x < _leftBorder || transform.position.x > _rightBorder)
@@ -63,20 +62,31 @@ public class BallController : MonoBehaviour
                 _rigidbody2D.velocity = Vector2.zero;
                 _balReturnTime = Time.time;
 
-                if (_gameStateController.GameState != GameStates.GameOver)
+                if (_gameStateController.GameState != GameState.GameOver)
                 {
-                    _gameStateController.GameState = GameStates.BallOutOfGame;
+                    _gameStateController.GameState = GameState.BallOutOfGame;
                 }
             }
 
             if (Time.time - _balReturnTime >= StationaryBallTime &&
-                _gameStateController.GameState == GameStates.BallOutOfGame)
+                _gameStateController.GameState == GameState.BallOutOfGame)
             {
                 _balReturnTime = 0;
                 PushTheBall();
-                _gameStateController.GameState = GameStates.Game;
+                _gameStateController.GameState = GameState.Game;
             }
         }
+    }
+
+    private void OnGameStateChanged()
+    {
+        MarkTheTime();
+
+        ReturnTheBallToTheCenter();
+
+        FixPositionAndSpeed();
+
+        StartMovingAgain();
     }
 
     private void MarkTheTime()
@@ -89,9 +99,9 @@ public class BallController : MonoBehaviour
         _rigidbody2D.velocity = Vector2.right * _ballSpeed;
     }
 
-    private void RreturnTheBallToTheCenter()
+    private void ReturnTheBallToTheCenter()
     {
-        if (_gameStateController.GameState == GameStates.ChoiceOfNumberOfPlayers)
+        if (_gameStateController.GameState == GameState.ChoiceOfNumberOfPlayers)
         {
             transform.position = new Vector2(0, 0);
             _rigidbody2D.velocity = Vector2.zero;
@@ -100,7 +110,7 @@ public class BallController : MonoBehaviour
 
     private void FixPositionAndSpeed()
     {
-        if (_gameStateController.GameState == GameStates.Pause && _gameStateController.StagePrevious == GameStates.Game)
+        if (_gameStateController.GameState == GameState.Pause && _gameStateController.PreviousStage == GameState.Game)
         {
             _fixedVelocity = _rigidbody2D.velocity;
             _rigidbody2D.velocity = Vector2.zero;
@@ -109,17 +119,9 @@ public class BallController : MonoBehaviour
 
     private void StartMovingAgain()
     {
-        if (_gameStateController.GameState == GameStates.Game && _gameStateController.StagePrevious == GameStates.Pause)
+        if (_gameStateController.GameState == GameState.Game && _gameStateController.PreviousStage == GameState.Pause)
         {
             _rigidbody2D.velocity = _fixedVelocity;
         }
-    }
-
-    private void OnDestroy()
-    {
-        _gameStateController.GameStateChanged -= MarkTheTime;
-        _gameStateController.GameStateChanged -= RreturnTheBallToTheCenter;
-        _gameStateController.GameStateChanged -= FixPositionAndSpeed;
-        _gameStateController.GameStateChanged -= StartMovingAgain;
     }
 }

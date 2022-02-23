@@ -16,18 +16,17 @@ public class ScoreController : MonoBehaviour
 
     private GameStateController _gameStateController;
 
-    public int ScoreLeftPlayer { get; private set; }
+    public int LeftPlayerScore { get; private set; }
 
-    public int ScoreRightPlayer { get; private set; }
+    public int RightPlayerScore { get; private set; }
 
-    public string Winner { get; private set; }
-
+    public Players Winner { get; private set; }
 
     private void Start()
     {
         foreach (var wall in _goalDetectors)
         {
-            wall.BallFlewOverTheLine += ScoreAPoint;
+            wall.GoalDetected += ScoreAPoint;
         }
 
         _gameStateController = _projectStarter.GetGameController();
@@ -37,37 +36,37 @@ public class ScoreController : MonoBehaviour
 
     private void ScoreAPoint(GameObject line)
     {
-        if (line.gameObject.name == "LeftWall")
+        if (line.GetComponent<GoalDetector>().GetScorer() == Players.RightPlayer)
         {
-            ScoreRightPlayer++;
-            _scoreRightPlayerText.text = ScoreRightPlayer.ToString();
-            CheckForVictory(ScoreRightPlayer, "RightPlayer");
+            RightPlayerScore++;
+            _scoreRightPlayerText.text = RightPlayerScore.ToString();
+            CheckForVictory(RightPlayerScore, Players.RightPlayer);
         }
-        else if (line.gameObject.name == "RightWall")
+        else if (line.GetComponent<GoalDetector>().GetScorer() == Players.LeftPlayer)
         {
-            ScoreLeftPlayer++;
-            _scoreLeftPlayerText.text = ScoreLeftPlayer.ToString();
-            CheckForVictory(ScoreLeftPlayer, "LeftPlayer");
+            LeftPlayerScore++;
+            _scoreLeftPlayerText.text = LeftPlayerScore.ToString();
+            CheckForVictory(LeftPlayerScore, Players.LeftPlayer);
         }
     }
 
-    private void CheckForVictory(int score, string player)
+    private void CheckForVictory(int score, Players player)
     {
         if (score == _winningScore)
         {
             Winner = player;
-            _gameStateController.GameState = GameStates.GameOver;
+            _gameStateController.GameState = GameState.GameOver;
         }
     }
 
     private void ResetTheScore()
     {
-        if (_gameStateController.GameState == GameStates.ChoiceOfNumberOfPlayers)
+        if (_gameStateController.GameState == GameState.ChoiceOfNumberOfPlayers)
         {
-            ScoreLeftPlayer = 0;
-            ScoreRightPlayer = 0;
-            _scoreLeftPlayerText.text = ScoreLeftPlayer.ToString();
-            _scoreRightPlayerText.text = ScoreRightPlayer.ToString();
+            LeftPlayerScore = 0;
+            RightPlayerScore = 0;
+            _scoreLeftPlayerText.text = LeftPlayerScore.ToString();
+            _scoreRightPlayerText.text = RightPlayerScore.ToString();
         }
     }
 
@@ -75,7 +74,7 @@ public class ScoreController : MonoBehaviour
     {
         foreach (var wall in _goalDetectors)
         {
-            wall.BallFlewOverTheLine -= ScoreAPoint;
+            wall.GoalDetected -= ScoreAPoint;
         }
 
         _gameStateController.GameStateChanged -= ResetTheScore;

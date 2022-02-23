@@ -5,10 +5,17 @@ public class GoalDetector : MonoBehaviour
 {
     [SerializeField] private GameObject _gameObject;
 
-    public event Action<GameObject> BallFlewOverTheLine;
+    [SerializeField] private Players _scorer;
+
+    public event Action<GameObject> GoalDetected;
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        BallFlewOverTheLine?.Invoke(_gameObject);
+        GoalDetected?.Invoke(_gameObject);
+    }
+
+    public Players GetScorer()
+    {
+        return _scorer;
     }
 }
