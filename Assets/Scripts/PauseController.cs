@@ -19,34 +19,34 @@ public class PauseController : MonoBehaviour
 
     private void TakeAPause()
     {
-        if (_gameStateController.GameState == GameStates.Game || _gameStateController.GameState == GameStates.Start ||
-            _gameStateController.GameState == GameStates.BallOutOfGame)
+        if (_gameStateController.GameState == GameState.Game || _gameStateController.GameState == GameState.Start ||
+            _gameStateController.GameState == GameState.BallOutOfGame)
         {
-            _gameStateController.GameState = GameStates.Pause;
-            _pauseScreenDisabler.DisablePauseScreen(true);
+            _gameStateController.GameState = GameState.Pause;
+            _pauseScreenDisabler.SetPauseScreenActive(true);
             return;
         }
 
-        if (_gameStateController.GameState == GameStates.Pause && _gameStateController.StagePrevious == GameStates.Game)
+        if (_gameStateController.GameState == GameState.Pause && _gameStateController.PreviousStage == GameState.Game)
         {
-            _gameStateController.GameState = GameStates.Game;
-            _pauseScreenDisabler.DisablePauseScreen(false);
+            _gameStateController.GameState = GameState.Game;
+            _pauseScreenDisabler.SetPauseScreenActive(false);
             return;
         }
 
-        if (_gameStateController.GameState == GameStates.Pause &&
-            _gameStateController.StagePrevious == GameStates.Start)
+        if (_gameStateController.GameState == GameState.Pause &&
+            _gameStateController.PreviousStage == GameState.Start)
         {
-            _gameStateController.GameState = GameStates.Start;
-            _pauseScreenDisabler.DisablePauseScreen(false);
+            _gameStateController.GameState = GameState.Start;
+            _pauseScreenDisabler.SetPauseScreenActive(false);
             return;
         }
 
-        if (_gameStateController.GameState == GameStates.Pause &&
-            _gameStateController.StagePrevious == GameStates.BallOutOfGame)
+        if (_gameStateController.GameState == GameState.Pause &&
+            _gameStateController.PreviousStage == GameState.BallOutOfGame)
         {
-            _gameStateController.GameState = GameStates.BallOutOfGame;
-            _pauseScreenDisabler.DisablePauseScreen(false);
+            _gameStateController.GameState = GameState.BallOutOfGame;
+            _pauseScreenDisabler.SetPauseScreenActive(false);
         }
     }
 }

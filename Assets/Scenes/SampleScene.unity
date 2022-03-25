@@ -378,7 +378,7 @@ MonoBehaviour:
   _goalDetectors:
   - {fileID: 1239650222}
   - {fileID: 222165623}
-  _winningScore: 5
+  _winningScore: 2
 --- !u!4 &203442087
 Transform:
   m_ObjectHideFlags: 0
@@ -516,7 +516,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _gameObject: {fileID: 222165619}
-  _scoreController: {fileID: 203442086}
+  _scorer: 0
 --- !u!1 &300407489
 GameObject:
   m_ObjectHideFlags: 0
@@ -702,8 +702,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _panel: {fileID: 891382834}
   _buttons:
-  - {fileID: 1164224698}
-  - {fileID: 1780243402}
+  - {fileID: 1164224693}
+  - {fileID: 1780243401}
   _projectStarter: {fileID: 517975847}
 --- !u!4 &420497339
 Transform:
@@ -844,9 +844,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _projectStarter: {fileID: 517975847}
+  _switchingControl: {fileID: 0}
   _rigidbody2D: {fileID: 486345951}
   _axis: Vertical1
   _speed: 50
+  _player: 0
 --- !u!61 &486345950
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1622,15 +1624,17 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1122248196}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 60649139fe8dd674db852c96eae139ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _projectStarter: {fileID: 517975847}
+  _switchingControl: {fileID: 1692362860}
   _rigidbody2D: {fileID: 1122248199}
   _axis: Vertical2
   _speed: 50
+  _player: 1
 --- !u!61 &1122248198
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1750,14 +1754,16 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1122248196}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b507fd3edcb4c1942a264fc8c2dc38c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _projectStarter: {fileID: 517975847}
+  _switchingControl: {fileID: 1692362860}
   _ballPosition: {fileID: 1653658517}
   _speed: 50
+  _player: 1
 --- !u!1 &1164224693
 GameObject:
   m_ObjectHideFlags: 0
@@ -2067,7 +2073,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _gameObject: {fileID: 1239650218}
-  _scoreController: {fileID: 203442086}
+  _scorer: 1
 --- !u!1 &1263953084
 GameObject:
   m_ObjectHideFlags: 0
@@ -2097,7 +2103,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f04e78508429df4c96bdeecdc121236, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _buttonsController: {fileID: 1465135589}
+  _restartButtonController: {fileID: 1465135589}
   _gameOverMenuController: {fileID: 1226012515}
   _startMenuDisabler: {fileID: 420497338}
   _projectStarter: {fileID: 517975847}
@@ -2164,7 +2170,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1465135587}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5ceb5918c8b0d6f4491e8030b8dcd5a2, type: 3}
+  m_Script: {fileID: 11500000, guid: 50c2bb720b0761842bbad35a1e9b2f82, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _button: {fileID: 1465135590}
@@ -2441,13 +2447,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69ad8e20248e86c4aa66007a18e9ab11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _buttons:
-  - {fileID: 1164224698}
-  - {fileID: 1780243402}
-  _racketRightController: {fileID: 1122248197}
-  _opponentController: {fileID: 1122248202}
+  _onePlayerButtonController: {fileID: 1164224698}
+  _twoPlayersButtonController: {fileID: 1780243402}
   _startMenuDisabler: {fileID: 420497338}
-  _projectStarter: {fileID: 517975847}
 --- !u!4 &1692362861
 Transform:
   m_ObjectHideFlags: 0
@@ -2600,7 +2602,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1780243401}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5ceb5918c8b0d6f4491e8030b8dcd5a2, type: 3}
+  m_Script: {fileID: 11500000, guid: d160999fef7898942b5148c2b6ece6d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _button: {fileID: 1780243403}

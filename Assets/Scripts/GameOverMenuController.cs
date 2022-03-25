@@ -28,30 +28,38 @@ public class GameOverMenuController : MonoBehaviour
         _gameStateController.GameStateChanged += DetermineTheResult;
     }
 
+    private void OnDestroy()
+    {
+        _gameStateController.GameStateChanged -= DetermineTheResult;
+    }
 
     private void DetermineTheResult()
     {
-        if (_gameStateController.GameState == GameStates.GameOver)
+        if (_gameStateController.GameState == GameState.GameOver)
         {
-            if (_switchingControlOfTheRightRacket.NumberOfPlayers == 1 && _scoreController.Winner == "LeftPlayer")
+            if (_switchingControlOfTheRightRacket.NumberOfPlayers == NumberOfPlayers.OnePlayer &&
+                _scoreController.Winner == Players.LeftPlayer)
             {
                 _winnerText.text = "You Win!";
             }
-            else if (_switchingControlOfTheRightRacket.NumberOfPlayers == 1 && _scoreController.Winner == "RightPlayer")
+            else if (_switchingControlOfTheRightRacket.NumberOfPlayers == NumberOfPlayers.OnePlayer &&
+                     _scoreController.Winner == Players.RightPlayer)
             {
                 _winnerText.text = "You Lose!";
             }
-            else if (_switchingControlOfTheRightRacket.NumberOfPlayers == 2 && _scoreController.Winner == "LeftPlayer")
+            else if (_switchingControlOfTheRightRacket.NumberOfPlayers == NumberOfPlayers.TwoPlayers &&
+                     _scoreController.Winner == Players.LeftPlayer)
             {
                 _winnerText.text = "Left Player Win!";
             }
-            else if (_switchingControlOfTheRightRacket.NumberOfPlayers == 2 && _scoreController.Winner == "RightPlayer")
+            else if (_switchingControlOfTheRightRacket.NumberOfPlayers == NumberOfPlayers.TwoPlayers &&
+                     _scoreController.Winner == Players.RightPlayer)
             {
                 _winnerText.text = "Right Player Win!";
             }
 
-            _finalScoreText.text = _scoreController.ScoreLeftPlayer.ToString() + " : " +
-                                   _scoreController.ScoreRightPlayer.ToString();
+            _finalScoreText.text = _scoreController.LeftPlayerScore + " : " +
+                                   _scoreController.RightPlayerScore;
 
             DisableGameOverMenu(true);
         }
@@ -64,10 +72,5 @@ public class GameOverMenuController : MonoBehaviour
         _winnerText.gameObject.SetActive(isActive);
         _finalScoreText.gameObject.SetActive(isActive);
         _buttonRestart.SetActive(isActive);
-    }
-
-    private void OnDestroy()
-    {
-        _gameStateController.GameStateChanged -= DetermineTheResult;
     }
 }

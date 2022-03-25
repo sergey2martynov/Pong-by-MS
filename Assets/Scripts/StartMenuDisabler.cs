@@ -5,7 +5,7 @@ public class StartMenuDisabler : MonoBehaviour
 {
     [SerializeField] private GameObject _panel;
 
-    [SerializeField] private List<ButtonsController> _buttons = new List<ButtonsController>();
+    [SerializeField] private List<GameObject> _buttons = new List<GameObject>();
 
     [SerializeField] private ProjectStarter _projectStarter;
 
@@ -22,9 +22,9 @@ public class StartMenuDisabler : MonoBehaviour
 
         foreach (var button in _buttons)
         {
-            button.gameObject.SetActive(isActive);
+            button.SetActive(isActive);
         }
 
-        _gameStateController.GameState = GameStates.Start;
+        _gameStateController.GameState = GameState.Start;
     }
 }

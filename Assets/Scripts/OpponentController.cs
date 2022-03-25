@@ -4,9 +4,13 @@ public class OpponentController : MonoBehaviour
 {
     [SerializeField] private ProjectStarter _projectStarter;
 
+    [SerializeField] private SwitchingControlOfTheRightRacket _switchingControl;
+
     [SerializeField] private Transform _ballPosition;
 
     [SerializeField] private float _speed = 30f;
+
+    [SerializeField] private Players _player;
 
     private GameStateController _gameStateController;
 
@@ -14,46 +18,66 @@ public class OpponentController : MonoBehaviour
 
     private Vector2 _startingPositionOfTheRightPlayer;
 
-    private const float UpperBound = 29.43501f;
+    private Vector2 _maximumUpPositionRacket;
 
-    private const float BottomBound = -29.585f;
+    private Vector2 _maximumDownPositionRacket;
 
     private void Start()
     {
         _gameStateController = _projectStarter.GetGameController();
 
-        _startingPositionOfTheRightPlayer = new Vector2(50.7f, 0);
-
         _gameStateController.GameStateChanged += RreturnTheRacketToTheCenter;
+
+        _startingPositionOfTheRightPlayer = new Vector2(PlayingFieldParameters.RightRacketXPosition, 0);
+
+        _maximumUpPositionRacket =
+            new Vector2(PlayingFieldParameters.RightRacketXPosition, PlayingFieldParameters.UpperBound);
+
+        _maximumDownPositionRacket =
+            new Vector2(PlayingFieldParameters.RightRacketXPosition, PlayingFieldParameters.BottomBound);
+    }
+
+    private void OnDestroy()
+    {
+        _gameStateController.GameStateChanged -= RreturnTheRacketToTheCenter;
     }
 
     private void FixedUpdate()
     {
-        if (_gameStateController.GameState == GameStates.Game ||
-            _gameStateController.GameState == GameStates.BallOutOfGame)
+        if (_switchingControl.NumberOfPlayers == NumberOfPlayers.OnePlayer)
         {
-            if (transform.position.y <= UpperBound && transform.position.y >= BottomBound)
+            if (_gameStateController.GameState == GameState.Game ||
+                _gameStateController.GameState == GameState.BallOutOfGame)
             {
-                _vectorAimedAtTheBall = new Vector2(50.7f, _ballPosition.position.y);
-                transform.position =
-                    Vector3.MoveTowards(transform.position, _vectorAimedAtTheBall, Time.deltaTime * _speed);
+                if (transform.position.y <= PlayingFieldParameters.UpperBound &&
+                    transform.position.y >= PlayingFieldParameters.BottomBound)
+                {
+                    _vectorAimedAtTheBall = new Vector2(50.7f, _ballPosition.position.y);
+                    transform.position =
+                        Vector3.MoveTowards(transform.position, _vectorAimedAtTheBall, Time.deltaTime * _speed);
+                }
+            }
+
+            if (transform.position.y > PlayingFieldParameters.UpperBound)
+            {
+                transform.position = _maximumUpPositionRacket;
+            }
+
+            if (transform.position.y < PlayingFieldParameters.BottomBound)
+            {
+                transform.position = _maximumDownPositionRacket;
             }
         }
+    }
 
-        if (transform.position.y > UpperBound)
-        {
-            transform.position = new Vector2(50.70003f, UpperBound);
-        }
-
-        if (transform.position.y < BottomBound)
-        {
-            transform.position = new Vector2(50.70003f, BottomBound);
-        }
+    public Players GetPlayer()
+    {
+        return _player;
     }
 
     private void RreturnTheRacketToTheCenter()
     {
-        if (_gameStateController.GameState == GameStates.GameOver)
+        if (_gameStateController.GameState == GameState.GameOver)
         {
             transform.position = _startingPositionOfTheRightPlayer;
         }

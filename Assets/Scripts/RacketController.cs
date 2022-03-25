@@ -1,15 +1,18 @@
-using System;
 using UnityEngine;
 
 public class RacketController : MonoBehaviour
 {
     [SerializeField] private ProjectStarter _projectStarter;
 
+    [SerializeField] private SwitchingControlOfTheRightRacket _switchingControl;
+
     [SerializeField] private Rigidbody2D _rigidbody2D;
 
     [SerializeField] private string _axis;
 
     [SerializeField] private float _speed = 30f;
+
+    [SerializeField] private Players _player;
 
     private GameStateController _gameStateController;
 
@@ -19,46 +22,54 @@ public class RacketController : MonoBehaviour
 
     private void Start()
     {
-        _startingPositionOfTheLeftPlayer = new Vector2(-50.6f, 0);
+        _startingPositionOfTheLeftPlayer = new Vector2(PlayingFieldParameters.LeftRacketXPosition, 0);
 
-        _startingPositionOfTheRightPlayer = new Vector2(50.7f, 0);
+        _startingPositionOfTheRightPlayer = new Vector2(PlayingFieldParameters.RightRacketXPosition, 0);
 
         _gameStateController = _projectStarter.GetGameController();
 
-        _gameStateController.GameStateChanged += RreturnTheRacketsToTheCenter;
+        _gameStateController.GameStateChanged += ReturnTheRacketsToTheCenter;
+    }
+
+    private void OnDestroy()
+    {
+        _gameStateController.GameStateChanged -= ReturnTheRacketsToTheCenter;
     }
 
     private void FixedUpdate()
     {
-        if (_gameStateController.GameState == GameStates.Game || _gameStateController.GameState == GameStates.Start ||
-            _gameStateController.GameState == GameStates.BallOutOfGame)
+        if (_player == Players.LeftPlayer || _player == Players.RightPlayer &&
+            _switchingControl.NumberOfPlayers == NumberOfPlayers.TwoPlayers)
         {
-            var input = Input.GetAxisRaw(_axis);
-            _rigidbody2D.velocity = new Vector2(0, input) * _speed;
-        }
-        else
-        {
-            _rigidbody2D.velocity = Vector2.zero;
+            if (_gameStateController.IsAllowedToMove())
+            {
+                var input = Input.GetAxisRaw(_axis);
+                _rigidbody2D.velocity = new Vector2(0, input) * _speed;
+            }
+            else
+            {
+                _rigidbody2D.velocity = Vector2.zero;
+            }
         }
     }
 
-    private void RreturnTheRacketsToTheCenter()
+    private void ReturnTheRacketsToTheCenter()
     {
-        if (_gameStateController.GameState == GameStates.GameOver)
+        if (_gameStateController.GameState == GameState.GameOver)
         {
-            if (_rigidbody2D.gameObject.name == "LeftPlayer")
+            if (_player == Players.LeftPlayer)
             {
                 transform.position = _startingPositionOfTheLeftPlayer;
             }
-            else if (_rigidbody2D.gameObject.name == "RightPlayer")
+            else if (_player == Players.RightPlayer)
             {
                 transform.position = _startingPositionOfTheRightPlayer;
             }
         }
     }
 
-    private void OnDestroy()
+    public Players GetPlayer()
     {
-        _gameStateController.GameStateChanged -= RreturnTheRacketsToTheCenter;
+        return _player;
     }
 }
